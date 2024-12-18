@@ -47,7 +47,6 @@ if (isset($_GET['movie_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>影视搜索</title>
-    <script src="https://v.vpsaz.cn/js/sm.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
