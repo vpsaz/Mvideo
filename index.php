@@ -55,7 +55,7 @@ if (isset($_GET['movie_id'])) {
             background-color: #f7f7f7;
             margin: 0;
             padding: 0;
-            background-image: url(), url(https://vpsaz.cn/qita/tupian/bj.svg);
+            background-image: url(), url(https://.../bj.svg); /* 自己找个背景图 */
             background-position: right bottom, left top;
             background-repeat: no-repeat, repeat;
         }
