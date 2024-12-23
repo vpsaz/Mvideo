@@ -17,13 +17,16 @@ if (!isBrowser()) {
     exit();
 }
 
+// 从本地缓存获取之前选择的片源，默认值设为1
+$selected_source = isset($_GET['y'])? $_GET['y'] : (isset($_COOKIE['selected_source'])? $_COOKIE['selected_source'] : '1');
+
 // 默认搜索关键词
-$search_query = isset($_GET['search']) ? urlencode($_GET['search']) : '';
+$search_query = isset($_GET['search'])? urlencode($_GET['search']) : '';
 
 // 请求电影列表 接口来自baiapi.cn
 $search_results = [];
 if ($search_query) {
-    $search_url = "https://baiapi.cn/api/ysss?wd={$search_query}";
+    $search_url = "https://v.vpsaz.cn/api/ysss/?y={$selected_source}&wd={$search_query}";
     $search_data = @file_get_contents($search_url);
     if ($search_data) {
         $search_results = json_decode($search_data, true);
@@ -33,14 +36,13 @@ if ($search_query) {
 // 获取影片详情 接口来自baiapi.cn
 $movie_details = null;
 if (isset($_GET['movie_id'])) {
-    $details_url = "https://baiapi.cn/api/ysss?id=" . urlencode($_GET['movie_id']);
+    $details_url = "https://v.vpsaz.cn/api/ysss/?y={$selected_source}&id=". urlencode($_GET['movie_id']);
     $details_data = @file_get_contents($details_url);
     if ($details_data) {
         $movie_details = json_decode($details_data, true);
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -230,28 +232,28 @@ if (isset($_GET['movie_id'])) {
 
         /* 背景遮罩层样式 */
         #announcementModal {
-            display: none; /* 默认隐藏 */
+            display: none;
             position: fixed;
-            top: 0; /* 背景从顶部开始 */
-            left: 0; /* 背景从左侧开始 */
-            width: 100%; /* 背景宽度为100% */
-            height: 100%; /* 背景高度为100% */
-            background-color: rgba(0, 0, 0, 0.5); /* 半透明背景 */
-            z-index: 9999; /* 保证遮罩层位于最上层 */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
         }
 
         /* 公告窗口样式 */
         .modal-content {
-            position: absolute; /* 设置为绝对定位 */
-            top: 50%; /* 顶部距离视口的50% */
-            left: 50%; /* 左侧距离视口的50% */
-            transform: translate(-50%, -50%); /* 完全居中 */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             background-color: #fff;
             padding: 20px;
             border-radius: 10px;
-            max-width: 600px; /* 最大宽度 */
-            width: 80%; /* 默认宽度 */
-            text-align: left; /* 内容左对齐 */
+            max-width: 600px;
+            width: 80%;
+            text-align: left;
         }
 
         .modal-content h2 {
@@ -268,8 +270,8 @@ if (isset($_GET['movie_id'])) {
             cursor: pointer;
             font-size: 16px;
             margin-top: 20px;
-            margin-left: auto;  /* 使按钮右对齐 */
-            display: block;     /* 使按钮作为块级元素显示 */
+            margin-left: auto;
+            display: block;
         }
 
         #closeButton:hover {
@@ -285,11 +287,11 @@ if (isset($_GET['movie_id'])) {
 
     /* 假设 LA-DATA-WIDGET 生成的 widget 是一个 div */
     #LA-DATA-WIDGET {
-        display: block; /* 将元素转为块级元素 */
-        margin: 0 auto; /* 自动左右边距实现居中 */
-        text-align: center; /* 如果内部有文字内容，居中 */
+        display: block;
+        margin: 0 auto;
+        text-align: center;
     }
-    </style>
+</style>
 </head>
 <body>
 
@@ -299,6 +301,7 @@ if (isset($_GET['movie_id'])) {
             <h2>📢 免责声明</h2>
             <p>本站所有内容均来自互联网，本站不会保存、复制或传播任何视频文件，也不对本站上的任何内容负法律责任。如果本站部分内容侵犯您的版权请告知，在必要证明文件下我们第一时间撤除。</p>
             <p><font color="red"><b>请勿相信视频中的任何广告！</b></font></p>
+            <p><b>开源地址：</b><a href="https://github.com/vpsaz/ysss">GitHub</a></p>
             <button id="closeButton" disabled>
                 <span id="countdownText">5</span> 秒后可关闭
             </button>
@@ -308,63 +311,78 @@ if (isset($_GET['movie_id'])) {
     <div id="container">
         <h1>影视搜索</h1>
 
-        <!-- 搜索表单 -->
-        <div id="searchForm">
-            <form action="" method="get">
-                <input type="text" name="search" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>" placeholder="请输入影片名称">
-                <button type="submit">搜索</button>
-            </form>
-        </div>
+<!-- 搜索表单 -->
+<div id="searchForm">
+    <form action="" method="get" style="display: flex; justify-content: center; align-items: center;">
+        <input type="text" name="search" value="<?php echo isset($_GET['search'])? htmlspecialchars($_GET['search']) : '';?>" placeholder="请输入影片名称" style="flex-grow: 1; padding: 10px 15px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; margin-right: 10px;"/>
+        
+<!-- 片源选择框 -->
+<select id="sourceSelect" name="y" style="padding: 10px 15px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; margin-right: 10px; appearance: none; -webkit-appearance: none; -moz-appearance: none; background-color: #fff; color: #333; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+    <option value="1" <?php echo ($selected_source == '1')? 'selected' : '';?>>片源1</option>
+    <option value="2" <?php echo ($selected_source == '2')? 'selected' : '';?>>片源2</option>
+    <option value="3" <?php echo ($selected_source == '3')? 'selected' : '';?>>片源3</option>
+    <option value="4" <?php echo ($selected_source == '4')? 'selected' : '';?>>片源4</option>
+    <option value="5" <?php echo ($selected_source == '5')? 'selected' : '';?>>片源5</option>
+    <!-- 如有更多片源，继续添加option元素 -->
+</select>
+
+
+        <!-- 搜索按钮 -->
+        <button type="submit" style="padding: 10px 20px; font-size: 16px; color: white; background-color: #007bff; border: none; border-radius: 5px; cursor: pointer; white-space: nowrap; text-align: center; vertical-align: middle; display: inline-flex; justify-content: center; align-items: center;">搜索</button>
+    </form>
+</div>
+
 
         <!-- 搜索结果展示 -->
-        <?php if (!isset($_GET['movie_id']) && isset($search_results['list']) && count($search_results['list']) > 0): ?>
+        <?php if (!isset($_GET['movie_id']) && isset($search_results['list']) && count($search_results['list']) > 0):?>
             <div id="movieList">
                 <h3>🔍 搜索结果</h3>
-                <?php foreach ($search_results['list'] as $movie): ?>
+                <?php foreach ($search_results['list'] as $movie):?>
                     <form action="" method="get">
-                        <input type="hidden" name="movie_id" value="<?php echo htmlspecialchars($movie['vod_id']); ?>">
-                        <input type="hidden" name="search" value="<?php echo htmlspecialchars($_GET['search']); ?>">
-                        <button type="submit"><?php echo htmlspecialchars($movie['vod_name']) . ' - ' . htmlspecialchars($movie['vod_remarks']); ?></button>
+                        <input type="hidden" name="movie_id" value="<?php echo htmlspecialchars($movie['vod_id']);?>">
+                        <input type="hidden" name="search" value="<?php echo htmlspecialchars($_GET['search']);?>">
+                        <input type="hidden" name="y" value="<?php echo htmlspecialchars($selected_source);?>">
+                        <button type="submit"><?php echo htmlspecialchars($movie['vod_name']). ' - '. htmlspecialchars($movie['vod_remarks']);?></button>
                     </form>
-                <?php endforeach; ?>
+                <?php endforeach;?>
             </div>
-        <?php elseif (isset($_GET['movie_id']) && $movie_details && isset($movie_details['name'])): ?>
+        <?php elseif (isset($_GET['movie_id']) && $movie_details && isset($movie_details['name'])):?>
             <!-- 影片详情展示 -->
             <div id="movieDetails">
                 <h3>🎬 影片详情</h3><hr>
                 <div class="movie-info">
                     <div class="details">
                         <table>
-                            <tr><th>导演</th><td><?php echo htmlspecialchars($movie_details['director']); ?></td></tr>
-                            <tr><th>类型</th><td><?php echo htmlspecialchars($movie_details['class']); ?></td></tr>
-                            <tr><th>日期</th><td><?php echo htmlspecialchars($movie_details['pubdate']); ?></td></tr>
-                            <tr><th>评分</th><td><?php echo htmlspecialchars($movie_details['douban_score']); ?></td></tr>
-                            <tr><th>地区</th><td><?php echo htmlspecialchars($movie_details['area']); ?></td></tr>
+                            <tr><th>导演</th><td><?php echo htmlspecialchars($movie_details['director']);?></td></tr>
+                            <tr><th>类型</th><td><?php echo htmlspecialchars($movie_details['class']);?></td></tr>
+                            <tr><th>日期</th><td><?php echo htmlspecialchars($movie_details['pubdate']);?></td></tr>
+                            <tr><th>评分</th><td><?php echo htmlspecialchars($movie_details['douban_score']);?></td></tr>
+                            <tr><th>地区</th><td><?php echo htmlspecialchars($movie_details['area']);?></td></tr>
                         </table>
                     </div>
                     <div class="poster">
-                        <img src="<?php echo htmlspecialchars($movie_details['pic']); ?>" alt="<?php echo htmlspecialchars($movie_details['name']); ?>" style="max-width: 100%;">
+                        <img src="<?php echo htmlspecialchars($movie_details['pic']);?>" alt="<?php echo htmlspecialchars($movie_details['name']);?>" style="max-width: 100%;">
                     </div>
                 </div>
 
                 <div class="content">
-                    <h3>💬 影片简介</h3><hr><p><?php echo $movie_details['content']; ?></p>
+                    <h3>💬 影片简介</h3><hr><p><?php echo $movie_details['content'];?></p>
                 </div><br>
 
                 <h3>🔞 播放列表</h3><hr>
                 <div>
-                    <?php if (isset($movie_details['play_url']) && is_array($movie_details['play_url'])): ?>
-                        <?php foreach ($movie_details['play_url'] as $episode): ?>
-                            <a href="https://baiapi.cn/api/webbfq?apiKey=313a67206aa9feded2fe4f97f0d06781&url=<?php echo htmlspecialchars($episode['link']); ?>" class="play-button" target="_blank">
-                                <?php echo htmlspecialchars($episode['title']); ?>
+                    <?php if (isset($movie_details['play_url']) && is_array($movie_details['play_url'])):?>
+                        <?php foreach ($movie_details['play_url'] as $episode):?>
+                            <a href="https://baiapi.cn/api/webbfq?apiKey=313a67206aa9feded2fe4f97f0d06781&url=<?php echo htmlspecialchars($episode['link']);?>" class="play-button" target="_blank">
+                                <?php echo htmlspecialchars($episode['title']);?>
                             </a>
-                        <?php endforeach; ?>
-                    <?php else: ?>
+                        <?php endforeach;?>
+                    <?php else:?>
                         <p>暂无播放列表。</p>
-                    <?php endif; ?>
+                    <?php endif;?>
                 </div>
             </div>
-        <?php endif; ?>
+        <?php endif;?>
     </div>
 
     <!-- 公告组成部分 -->
