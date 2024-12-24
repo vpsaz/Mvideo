@@ -373,7 +373,7 @@ if (isset($_GET['movie_id'])) {
                 <div>
                     <?php if (isset($movie_details['play_url']) && is_array($movie_details['play_url'])):?>
                         <?php foreach ($movie_details['play_url'] as $episode):?>
-                            <a href="https://baiapi.cn/api/webbfq?apiKey=313a67206aa9feded2fe4f97f0d06781&url=<?php echo htmlspecialchars($episode['link']);?>" class="play-button" target="_blank">
+                            <a href="https://baiapi.cn/api/webbfq?apiKey=313a67206aa9feded2fe4f97f0d06781&url=<?php echo htmlspecialchars($episode['link']);?>" class="play-button" target="_blank"><!-- 这里可以更换其他播放器接口 -->
                                 <?php echo htmlspecialchars($episode['title']);?>
                             </a>
                         <?php endforeach;?>
