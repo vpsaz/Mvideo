@@ -114,8 +114,8 @@ if (isset($_GET['movie_id'])) {
             background-color: #e9ecef;
         }
         #movieDetails img {
-            width: 200px;
-            height: auto;
+            width: 210px;
+            height: 290px;
             margin-top: 10px;
             display: block;
             border-radius: 8px;
