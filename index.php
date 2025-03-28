@@ -1,42 +1,34 @@
 <?php
 function isBrowser() {
-    // 获取用户代理字符串
     $userAgent = $_SERVER['HTTP_USER_AGENT'];
 
-    // 简单的浏览器判断，可以根据需要更改或扩展
     if (preg_match('/(MSIE|Trident|Edge|Firefox|Chrome|Safari|Opera)/i', $userAgent)) {
-        return true; // 是浏览器
+        return true;
     }
 
-    return false; // 不是浏览器
+    return false;
 }
 
-// 如果不是浏览器访问，跳转到指定的网址
 if (!isBrowser()) {
     header("Location: https://cn.bing.com/search?q=%E8%AF%B7%E4%BD%BF%E7%94%A8%E6%B5%8F%E8%A7%88%E5%99%A8%E6%89%93%E5%BC%80");
     exit();
 }
 
-// 从本地缓存获取之前选择的片源，默认值设为1
 $selected_source = isset($_GET['y'])? $_GET['y'] : (isset($_COOKIE['selected_source'])? $_COOKIE['selected_source'] : '1');
-
-// 默认搜索关键词
 $search_query = isset($_GET['search'])? urlencode($_GET['search']) : '';
 
-// 请求电影列表 接口来自baiapi.cn
 $search_results = [];
 if ($search_query) {
-    $search_url = "https://v.vpsaz.cn/api/ysss/?y={$selected_source}&wd={$search_query}";
+    $search_url = "https://baiapi.cn/api/ysss?y={$selected_source}&wd={$search_query}";
     $search_data = @file_get_contents($search_url);
     if ($search_data) {
         $search_results = json_decode($search_data, true);
     }
 }
 
-// 获取影片详情 接口来自baiapi.cn
 $movie_details = null;
 if (isset($_GET['movie_id'])) {
-    $details_url = "https://v.vpsaz.cn/api/ysss/?y={$selected_source}&id=". urlencode($_GET['movie_id']);
+    $details_url = "https://baiapi.cn/api/ysss?y={$selected_source}&id=". urlencode($_GET['movie_id']);
     $details_data = @file_get_contents($details_url);
     if ($details_data) {
         $movie_details = json_decode($details_data, true);
@@ -57,7 +49,7 @@ if (isset($_GET['movie_id'])) {
             background-color: #f7f7f7;
             margin: 0;
             padding: 0;
-            background-image: url(), url(https://.../bj.svg); /* 自己找个背景图 */
+            background-image: url(), url(https://xxx.cn/bj.svg); // 背景图
             background-position: right bottom, left top;
             background-repeat: no-repeat, repeat;
         }
@@ -229,8 +221,6 @@ if (isset($_GET['movie_id'])) {
             background-color: #007bff;
             border-radius: 2px;
         }
-
-        /* 背景遮罩层样式 */
         #announcementModal {
             display: none;
             position: fixed;
@@ -241,8 +231,6 @@ if (isset($_GET['movie_id'])) {
             background-color: rgba(0, 0, 0, 0.5);
             z-index: 9999;
         }
-
-        /* 公告窗口样式 */
         .modal-content {
             position: absolute;
             top: 50%;
@@ -255,12 +243,9 @@ if (isset($_GET['movie_id'])) {
             width: 80%;
             text-align: left;
         }
-
         .modal-content h2 {
             margin-bottom: 20px;
         }
-
-        /* 按钮样式 */
         #closeButton {
             background-color: #007bff;
             color: white;
@@ -273,29 +258,22 @@ if (isset($_GET['movie_id'])) {
             margin-left: auto;
             display: block;
         }
-
         #closeButton:hover {
             background-color: #0056b3;
         }
-
-        /* 倒计时显示在按钮 */
         .countdown {
             font-size: 18px;
             color: #fff;
             margin-left: 10px;
         }
-
-    /* 假设 LA-DATA-WIDGET 生成的 widget 是一个 div */
-    #LA-DATA-WIDGET {
-        display: block;
-        margin: 0 auto;
-        text-align: center;
-    }
-</style>
+        #LA-DATA-WIDGET {
+            display: block;
+            margin: 0 auto;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-
-    <!-- 背景遮罩层 -->
     <div id="announcementModal">
         <div class="modal-content">
             <h2>📢 免责声明</h2>
@@ -311,29 +289,23 @@ if (isset($_GET['movie_id'])) {
     <div id="container">
         <h1>影视搜索</h1>
 
-<!-- 搜索表单 -->
-<div id="searchForm">
-    <form action="" method="get" style="display: flex; justify-content: center; align-items: center;">
-        <input type="text" name="search" value="<?php echo isset($_GET['search'])? htmlspecialchars($_GET['search']) : '';?>" placeholder="请输入影片名称" style="flex-grow: 1; padding: 10px 15px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; margin-right: 10px;"/>
-        
-<!-- 片源选择框 -->
-<select id="sourceSelect" name="y" style="padding: 10px 15px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; margin-right: 10px; appearance: none; -webkit-appearance: none; -moz-appearance: none; background-color: #fff; color: #333; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-    <option value="1" <?php echo ($selected_source == '1')? 'selected' : '';?>>片源1</option>
-    <option value="2" <?php echo ($selected_source == '2')? 'selected' : '';?>>片源2</option>
-    <option value="3" <?php echo ($selected_source == '3')? 'selected' : '';?>>片源3</option>
-    <option value="4" <?php echo ($selected_source == '4')? 'selected' : '';?>>片源4</option>
-    <option value="5" <?php echo ($selected_source == '5')? 'selected' : '';?>>片源5</option>
-    <!-- 如有更多片源，继续添加option元素 -->
-</select>
+        <div id="searchForm">
+            <form action="" method="get" style="display: flex; justify-content: center; align-items: center;">
+                <input type="text" name="search" value="<?php echo isset($_GET['search'])? htmlspecialchars($_GET['search']) : '';?>" placeholder="请输入影片名称" style="flex-grow: 1; padding: 10px 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; margin-right: 10px;"/>
+                
+                <select id="sourceSelect" name="y" style="flex-grow: 1; padding: 10px 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; margin-right: 10px;background:white url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAaklEQVR4nO2PQQqAMAwEpwff2otWwY/Ym48VFSFCkIBQAr1kIOSQZbaFIAi6MzhlTCbgkP2XGVsKFuACTqAY9yK3JzO3FCRgUyVakpV8lyxeJdlLrkuqKnnl1UNu/cTt5V8ScMq4y4OgIzfe6R6N01DwigAAAABJRU5ErkJggg==') no-repeat right 10px center;-webkit-appearance:none;-moz-appearance:none;appearance:none;cursor:pointer;padding-right:35px;">
+                    <option value="1" <?php echo ($selected_source == '1')? 'selected' : '';?>>片源1</option>
+                    <option value="2" <?php echo ($selected_source == '2')? 'selected' : '';?>>片源2</option>
+                    <option value="3" <?php echo ($selected_source == '3')? 'selected' : '';?>>片源3</option>
+                    <option value="4" <?php echo ($selected_source == '4')? 'selected' : '';?>>片源4</option>
+                    <option value="5" <?php echo ($selected_source == '5')? 'selected' : '';?>>片源5</option>
+                    <option value="6" <?php echo ($selected_source == '6')? 'selected' : '';?>>片源6</option>
+                </select>
 
+                <button type="submit" style="padding: 10px 15px; font-size: 16px; color: white; background-color: #007bff; border: none; border-radius: 5px; cursor: pointer; white-space: nowrap; text-align: center; vertical-align: middle; display: inline-flex; justify-content: center; align-items: center;">搜索</button>
+            </form>
+        </div>
 
-        <!-- 搜索按钮 -->
-        <button type="submit" style="padding: 10px 20px; font-size: 16px; color: white; background-color: #007bff; border: none; border-radius: 5px; cursor: pointer; white-space: nowrap; text-align: center; vertical-align: middle; display: inline-flex; justify-content: center; align-items: center;">搜索</button>
-    </form>
-</div>
-
-
-        <!-- 搜索结果展示 -->
         <?php if (!isset($_GET['movie_id']) && isset($search_results['list']) && count($search_results['list']) > 0):?>
             <div id="movieList">
                 <h3>🔍 搜索结果</h3>
@@ -347,7 +319,6 @@ if (isset($_GET['movie_id'])) {
                 <?php endforeach;?>
             </div>
         <?php elseif (isset($_GET['movie_id']) && $movie_details && isset($movie_details['name'])):?>
-            <!-- 影片详情展示 -->
             <div id="movieDetails">
                 <h3>🎬 影片详情</h3><hr>
                 <div class="movie-info">
@@ -373,7 +344,7 @@ if (isset($_GET['movie_id'])) {
                 <div>
                     <?php if (isset($movie_details['play_url']) && is_array($movie_details['play_url'])):?>
                         <?php foreach ($movie_details['play_url'] as $episode):?>
-                            <a href="https://baiapi.cn/api/wzbfq?y=1&url=<?php echo htmlspecialchars($episode['link']);?>" class="play-button" target="_blank"><!-- 这里可以更换其他播放器接口 -->
+                            <a href="https://baiapi.cn/api/webbfq?&apiKey=f1423be3a0552383607175dd0b3eb4c3&url=<?php echo htmlspecialchars($episode['link']);?>" class="play-button" target="_blank"><!-- 将 f1423be3a0552383607175dd0b3eb4c3 更换为您自己的key即可 -->
                                 <?php echo htmlspecialchars($episode['title']);?>
                             </a>
                         <?php endforeach;?>
@@ -385,59 +356,47 @@ if (isset($_GET['movie_id'])) {
         <?php endif;?>
     </div>
 
-    <!-- 公告组成部分 -->
     <script>
-        // 检查是否已经显示过公告
         function shouldShowAnnouncement() {
             const lastShownDate = localStorage.getItem('lastShownDate');
             const today = new Date().toLocaleDateString();
 
-            // 如果日期不同，则需要显示公告
             if (lastShownDate !== today) {
                 return true;
             }
             return false;
         }
 
-        // 显示公告
         function showAnnouncement() {
             const modal = document.getElementById('announcementModal');
             const closeButton = document.getElementById('closeButton');
             const countdownText = document.getElementById('countdownText');
-            let countdown = 5; // 倒计时5秒
+            let countdown = 5;
 
-            modal.style.display = 'block'; // 显示公告窗口
+            modal.style.display = 'block';
 
-            // 设置倒计时
             const timer = setInterval(function() {
                 countdown--;
                 countdownText.textContent = countdown;
 
-                // 在倒计时期间，按钮显示 "X 秒后可关闭"
                 if (countdown > 0) {
                     closeButton.disabled = true;
                     closeButton.textContent = `${countdown} 秒后可关闭`;
                 }
 
-                // 倒计时结束，按钮显示 "关闭公告"
                 if (countdown <= 0) {
                     clearInterval(timer);
-                    closeButton.disabled = false; // 启用关闭按钮
-                    closeButton.textContent = '关闭公告'; // 显示关闭按钮
+                    closeButton.disabled = false;
+                    closeButton.textContent = '关闭公告';
                 }
             }, 1000);
 
-            // 点击关闭按钮时，记录今天已经显示过公告
             closeButton.onclick = function() {
-                // 记录今天已经显示过公告
                 localStorage.setItem('lastShownDate', new Date().toLocaleDateString());
-
-                // 关闭公告窗口
                 modal.style.display = 'none'; 
             };
         }
 
-        // 页面加载时，检查是否需要显示公告
         window.onload = function() {
             if (shouldShowAnnouncement()) {
                 showAnnouncement();
