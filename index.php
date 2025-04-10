@@ -19,7 +19,7 @@ $search_query = isset($_GET['search']) ? urlencode($_GET['search']) : '';
 
 $search_results = [];
 if ($search_query) {
-    $search_url = "https://v.vpsaz.cn/api/ysss/?y={$selected_source}&wd={$search_query}";
+    $search_url = "https://baiapi.cn/api/ysss?y={$selected_source}&wd={$search_query}";
     $search_data = @file_get_contents($search_url);
     if ($search_data) {
         $search_results = json_decode($search_data, true);
@@ -28,7 +28,7 @@ if ($search_query) {
 
 $movie_details = null;
 if (isset($_GET['movie_id'])) {
-    $details_url = "https://v.vpsaz.cn/api/ysss/?y={$selected_source}&id=". urlencode($_GET['movie_id']);
+    $details_url = "https://baiapi.cn/api/ysss?y={$selected_source}&id=". urlencode($_GET['movie_id']);
     $details_data = @file_get_contents($details_url);
     if ($details_data) {
         $movie_details = json_decode($details_data, true);
