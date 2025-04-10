@@ -96,7 +96,7 @@ if (isset($_GET['movie_id'])) {
             color: var(--text-color);
             margin: 0;
             padding: 0;
-            background-image: url(), url(https://.../bj.svg);
+            background-image: url(), url(https://vpsaz.cn/qita/tupian/bj.svg);
             background-position: right bottom, left top;
             background-repeat: no-repeat, repeat;
         }
@@ -199,16 +199,16 @@ if (isset($_GET['movie_id'])) {
         }
 
         #movieDetails img {
-            width: 210px;
-            height: 290px;
-            margin-top: 10px;
+            width: 152px;
+            height: 230px;
+            margin-top: 3px;
             display: block;
             border-radius: 8px;
         }
 
         table {
             width: 100%;
-            margin: 20px 0;
+            margin: 0px 0;
             border-collapse: collapse;
             border-radius: 8px;
             overflow: hidden;
@@ -234,7 +234,7 @@ if (isset($_GET['movie_id'])) {
             max-height: 300px;
             overflow-x: auto;
             overflow-y: auto;
-            margin-top: 10px;
+            margin-top: 3px;
         }
 
         .movie-info {
@@ -244,11 +244,11 @@ if (isset($_GET['movie_id'])) {
         }
 
         .movie-info .details {
-            width: 70%;
+            width: 78%;
         }
 
         .movie-info .poster {
-            width: 28%;
+            width: 20%;
         }
 
         .movie-info .content {
