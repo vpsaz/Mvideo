@@ -96,7 +96,7 @@ if (isset($_GET['movie_id'])) {
             color: var(--text-color);
             margin: 0;
             padding: 0;
-            background-image: url(), url(https://vpsaz.cn/qita/tupian/bj.svg);
+            background-image: url(), url(https://.../bj.svg);
             background-position: right bottom, left top;
             background-repeat: no-repeat, repeat;
         }
