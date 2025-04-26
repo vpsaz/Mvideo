@@ -495,7 +495,7 @@ if (isset($_GET['movie_id'])) {
                 <div>
                     <?php if (isset($movie_details['play_url']) && is_array($movie_details['play_url'])): ?>
                         <?php foreach ($movie_details['play_url'] as $episode): ?>
-                            <a href="https://baiapi.cn/api/webbfq?&apiKey=b458d0b622fc7634bf24c5e6a956d352&url=<?php echo htmlspecialchars($episode['link']); ?>" class="play-button" target="_blank">
+                            <a href="https://baiapi.cn/api/webbfq?url=<?php echo htmlspecialchars($episode['link']); ?>" class="play-button" target="_blank">
                                 <?php echo htmlspecialchars($episode['title']); ?>
                             </a>
                         <?php endforeach; ?>
