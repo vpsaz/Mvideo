@@ -258,8 +258,8 @@ if (isset($_GET['movie_id'])) {
 
         #movieDetails .play-button {
             display: inline-block;
-            margin: 5px;
-            padding: 8px 12px;
+            margin: 4px;
+            padding: 8px 11px;
             font-size: 16px;
             background-color: var(--play-button);
             color: white;
@@ -495,7 +495,7 @@ if (isset($_GET['movie_id'])) {
                 <div>
                     <?php if (isset($movie_details['play_url']) && is_array($movie_details['play_url'])): ?>
                         <?php foreach ($movie_details['play_url'] as $episode): ?>
-                            <a href="https://baiapi.cn/api/webbfq?url=<?php echo htmlspecialchars($episode['link']); ?>" class="play-button" target="_blank">
+                            <a href="https://baiapi.cn/api/qtbfq?url=<?php echo htmlspecialchars($episode['link']); ?>" class="play-button" target="_blank">
                                 <?php echo htmlspecialchars($episode['title']); ?>
                             </a>
                         <?php endforeach; ?>
