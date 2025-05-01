@@ -1,25 +1,46 @@
 <?php
+/**
+ * @author    校长bloG <1213235865@qq.com>
+ * @github    https://github.com/vpsaz/ysss
+ */
+
+$conf = include('config.php');
+$source_count = isset($conf['source_count']) ? intval($conf['source_count']) : 1;
+
+// 获取用户主题偏好（从Cookie或系统偏好）
 function getInitialTheme() {
     if (isset($_COOKIE['theme_preference'])) {
         return $_COOKIE['theme_preference'] === 'dark' ? 'dark' : 'light';
     }
+    
     if (isset($_SERVER['HTTP_ACCEPT'])) {
         $accept = $_SERVER['HTTP_ACCEPT'];
         if (strpos($accept, 'prefers-color-scheme: dark') !== false) {
             return 'dark';
         }
     }
+    
     return 'light';
 }
 
 $initialTheme = getInitialTheme();
+
+function isBrowser() {
+    $userAgent = $_SERVER['HTTP_USER_AGENT'];
+    return preg_match('/(MSIE|Trident|Edge|Firefox|Chrome|Safari|Opera)/i', $userAgent);
+}
+
+if (!isBrowser()) {
+    header('Location: ' . $conf['redirect_url']);
+    exit();
+}
 
 $selected_source = isset($_GET['y']) ? $_GET['y'] : (isset($_COOKIE['selected_source']) ? $_COOKIE['selected_source'] : '1');
 $search_query = isset($_GET['search']) ? urlencode($_GET['search']) : '';
 
 $search_results = [];
 if ($search_query) {
-    $search_url = "https://baiapi.cn/api/ysss?y={$selected_source}&wd={$search_query}";
+    $search_url = "https://baiapi.cn/api/ysss?apiKey=" . $conf['baiapi_key'] . "&y={$selected_source}&wd={$search_query}";
     $search_data = @file_get_contents($search_url);
     if ($search_data) {
         $search_results = json_decode($search_data, true);
@@ -28,11 +49,16 @@ if ($search_query) {
 
 $movie_details = null;
 if (isset($_GET['movie_id'])) {
-    $details_url = "https://baiapi.cn/api/ysss?y={$selected_source}&id=". urlencode($_GET['movie_id']);
+    $details_url = "https://baiapi.cn/api/ysss?apiKey=" . $conf['baiapi_key'] . "&y={$selected_source}&id=". urlencode($_GET['movie_id']);
     $details_data = @file_get_contents($details_url);
     if ($details_data) {
         $movie_details = json_decode($details_data, true);
     }
+}
+
+$no_results = false;
+if ($search_query && empty($search_results['list'])) {
+    $no_results = true;
 }
 ?>
 <!DOCTYPE html>
@@ -40,7 +66,10 @@ if (isset($_GET['movie_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>影视搜索</title>
+    <title><?php echo $conf['site_title']; ?></title>
+    <meta name="description" content="<?php echo $conf['site_description']; ?>" />
+    <meta name="keywords" content="<?php echo $conf['site_keywords']; ?>" />
+    <link rel="shortcut icon" href="https://pic1.imgdb.cn/item/6812e03558cb8da5c8d5d3c3.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         :root {
@@ -96,7 +125,7 @@ if (isset($_GET['movie_id'])) {
             color: var(--text-color);
             margin: 0;
             padding: 0;
-            background-image: url(), url(https://.../bj.svg);
+            background-image: url(), url(<?php echo $conf['background_image_url']; ?>);
             background-position: right bottom, left top;
             background-repeat: no-repeat, repeat;
         }
@@ -423,9 +452,8 @@ if (isset($_GET['movie_id'])) {
     <div id="announcementModal">
         <div class="modal-content">
             <h2>📢 免责声明</h2>
-            <p>本站所有内容均来自互联网，本站不会保存、复制或传播任何视频文件，也不对本站上的任何内容负法律责任。如果本站部分内容侵犯您的版权请告知，在必要证明文件下我们第一时间撤除。</p>
+            <p><?php echo $conf['disclaimers']; ?></p>
             <p><font color="red"><b>请勿相信视频中的任何广告！</b></font></p>
-            <p><b>开源地址：</b><a href="https://github.com/vpsaz/ysss">GitHub</a></p>
             <button id="closeButton" disabled>
                 <span id="countdownText">5</span> 秒后可关闭
             </button>
@@ -433,7 +461,7 @@ if (isset($_GET['movie_id'])) {
     </div>
 
     <div id="container">
-        <h1>影视搜索</h1>
+        <h1><?php echo $conf['site_title']; ?></h1>
 
         <div id="searchForm">
             <form action="" method="get" style="display: flex; justify-content: center; align-items: center;">
@@ -441,12 +469,9 @@ if (isset($_GET['movie_id'])) {
                 
                 <div class="select-wrapper">
                     <select id="sourceSelect" name="y">
-                        <option value="1" <?php echo ($selected_source == '1') ? 'selected' : ''; ?>>片源1</option>
-                        <option value="2" <?php echo ($selected_source == '2') ? 'selected' : ''; ?>>片源2</option>
-                        <option value="3" <?php echo ($selected_source == '3') ? 'selected' : ''; ?>>片源3</option>
-                        <option value="4" <?php echo ($selected_source == '4') ? 'selected' : ''; ?>>片源4</option>
-                        <option value="5" <?php echo ($selected_source == '5') ? 'selected' : ''; ?>>片源5</option>
-                        <option value="6" <?php echo ($selected_source == '6') ? 'selected' : ''; ?>>片源6</option>
+<?php for ($i = 1; $i <= $source_count; $i++): ?>
+    <option value="<?php echo $i; ?>" <?php echo ($selected_source == (string)$i) ? 'selected' : ''; ?>>片源<?php echo $i; ?></option>
+<?php endfor; ?>
                     </select>
                     <div class="select-arrow">
                         <i class="fas fa-angle-down"></i>
@@ -488,23 +513,20 @@ if (isset($_GET['movie_id'])) {
                 </div>
 
                 <div class="content">
-                    <h3>💬 影片简介</h3><hr><p><?php echo $movie_details['content']; ?></p>
+                    <br><h3>💬 影片简介</h3><hr><p><?php echo $movie_details['content']; ?></p>
                 </div><br>
 
                 <h3>🔞 播放列表</h3><hr>
-                <div>
                     <?php if (isset($movie_details['play_url']) && is_array($movie_details['play_url'])): ?>
                         <?php foreach ($movie_details['play_url'] as $episode): ?>
-                            <a href="https://baiapi.cn/api/qtbfq?url=<?php echo htmlspecialchars($episode['link']); ?>" class="play-button" target="_blank">
-                                <?php echo htmlspecialchars($episode['title']); ?>
-                            </a>
+                            <a href="<?php echo $conf['player_api_prefix']; ?><?php echo htmlspecialchars($episode['link']); ?>" class="play-button" target="_blank"><?php echo htmlspecialchars($episode['title']); ?></a>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <p>暂无播放列表。</p>
                     <?php endif; ?>
-                </div>
             </div>
         <?php endif; ?>
+<?php echo $conf['announcement']; ?>
     </div>
 
     <script>
@@ -572,5 +594,13 @@ if (isset($_GET['movie_id'])) {
             }
         });
     </script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    <?php if ($no_results): ?>
+        alert("没有找到相关影片");
+    <?php endif; ?>
+});
+</script>
+
 </body>
 </html>
