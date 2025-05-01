@@ -436,9 +436,9 @@ if ($search_query && empty($search_results['list'])) {
         }
 
         .content p {
-            word-wrap: break-word;   /* 保证长单词或URL能在容器宽度内换行 */
-            white-space: normal;     /* 允许内容换行 */
-            word-break: break-word;  /* 强制换行 */
+            word-wrap: break-word;
+            white-space: normal;
+            word-break: break-word;
         }
         
         #LA-DATA-WIDGET {
