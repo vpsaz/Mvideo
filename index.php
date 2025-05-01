@@ -7,7 +7,6 @@
 $conf = include('config.php');
 $source_count = isset($conf['source_count']) ? intval($conf['source_count']) : 1;
 
-// 获取用户主题偏好（从Cookie或系统偏好）
 function getInitialTheme() {
     if (isset($_COOKIE['theme_preference'])) {
         return $_COOKIE['theme_preference'] === 'dark' ? 'dark' : 'light';
