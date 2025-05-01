@@ -10,7 +10,6 @@ $config_file = __DIR__ . '/config.php';
 $conf = include($config_file);
 $conf = include('config.php');
 
-// 登录处理
 if (isset($_POST['login'])) {
     if ($_POST['password'] === $conf['admin_password']) {
         $_SESSION['admin_logged_in'] = true;
@@ -19,7 +18,6 @@ if (isset($_POST['login'])) {
     }
 }
 
-// 保存配置
 if (isset($_POST['save']) && isset($_SESSION['admin_logged_in'])) {
     $conf['site_title']     = $_POST['site_title'];
     $conf['redirect_url']   = $_POST['redirect_url'];
@@ -33,13 +31,11 @@ if (isset($_POST['save']) && isset($_SESSION['admin_logged_in'])) {
     $conf['baiapi_key'] = $_POST['baiapi_key'];
     $conf['admin_password'] = $_POST['admin_password'];
 
-    // 导出配置并写入文件
     $export = "<?php\nreturn " . var_export($conf, true) . ";\n";
     file_put_contents($config_file, $export);
     $message = '配置已保存！';
 }
 
-// 如果未登录，显示登录表单
 if (!isset($_SESSION['admin_logged_in'])) {
 ?>
 <!DOCTYPE html>
