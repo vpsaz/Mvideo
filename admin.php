@@ -267,5 +267,4 @@ if (!isset($_SESSION['admin_logged_in'])) {
         }
     </script>
 </body>
-
 </html>
