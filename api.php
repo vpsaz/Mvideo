@@ -11,13 +11,11 @@ header('Content-type: text/html;charset=utf-8');
 $conf = include('config.php');
 $url = $_GET['url'] ?? '';
 
-// 1. 空URL检查
 if (empty($url)) {
     echo json_encode(['code' => 404, 'msg' => "请输入URL"], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-// 2. 严格URL协议校验
 if (!preg_match('/^https?:\/\//i', $url)) {
     echo json_encode(['code' => 404, 'msg' => "请输入正确的URL"], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     exit;
