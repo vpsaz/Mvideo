@@ -211,7 +211,7 @@ if (!isset($_SESSION['admin_logged_in'])) {
                         <label class="block text-sm font-medium text-gray-700 mb-1">搜索接口APIKEY (<font color="#FF0000">必填</font>)</label>
                         <div class="flex items-center">
                             <input type="text" name="baiapi_key" value="<?php echo htmlspecialchars($conf['baiapi_key']); ?>" class="form-input flex-1 px-4 py-2 rounded-lg focus:outline-none">
-                            <a href="https://baiapi.cn/doc/ysss.html" target="_blank" class="ml-2 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm hover:bg-gray-200"><i class="fas fa-external-link-alt mr-1"></i>文档</a>
+                            <a href="https://baiapi.cn/" target="_blank" class="ml-2 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm hover:bg-gray-200"><i class="fas fa-external-link-alt mr-1"></i>文档</a>
                         </div>
                     </div>
                     
