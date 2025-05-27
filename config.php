@@ -5,7 +5,7 @@
  */
 
 return array (
-  'site_title' => '影视搜索',
+  'site_title' => 'Mvideo 影视搜索',
   'site_description' => '校长影视搜索',
   'site_keywords' => '影视搜索,电影,电视剧,网剧',
   'redirect_url' => '请使用浏览器访问网址',
