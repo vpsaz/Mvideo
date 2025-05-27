@@ -7,6 +7,9 @@
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, GET');
 
+$config_file = __DIR__ . '/config.php';
+$conf = include($config_file);
+
 $url = $_POST['url'] ?? $_GET['url'] ?? '';
 
 if (empty($url)) {
