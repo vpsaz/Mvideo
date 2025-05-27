@@ -4,7 +4,8 @@
  * @github    https://github.com/vpsaz/Mvideo
  */
 
-$conf = include('config.php');
+$config_file = __DIR__ . '/config.php';
+$conf = include($config_file);
 $source_count = isset($conf['source_count']) ? intval($conf['source_count']) : 1;
 
 function getInitialTheme() {
