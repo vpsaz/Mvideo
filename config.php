@@ -1,7 +1,7 @@
 <?php
 /**
  * @author    校长bloG <1213235865@qq.com>
- * @github    https://github.com/vpsaz/ysss
+ * @github    https://github.com/vpsaz/Mvideo
  */
 
 return array (
