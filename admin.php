@@ -8,7 +8,6 @@ session_start();
 
 $config_file = __DIR__ . '/config.php';
 $conf = include($config_file);
-$conf = include('config.php');
 
 if (isset($_POST['login'])) {
     if ($_POST['password'] === $conf['admin_password']) {
