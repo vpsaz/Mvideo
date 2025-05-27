@@ -35,8 +35,8 @@ $safe_url = htmlspecialchars($url, ENT_QUOTES);
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $conf['site_title']; ?> - 播放器</title>
-    <meta name="description" content="<?php echo $conf['description']; ?>" />
-    <meta name="keywords" content="<?php echo $conf['keywords']; ?>" />
+    <meta name="description" content="<?php echo $conf['description']; ?>">
+    <meta name="keywords" content="<?php echo $conf['keywords']; ?>">
     <link rel="shortcut icon" href="https://pic1.imgdb.cn/item/6812e03558cb8da5c8d5d3c3.png" type="image/x-icon">
     <script src="https://unpkg.com/hls.js@1.4.8/dist/hls.min.js"></script>
     <script src="https://unpkg.com/flv.js@1.6.2/dist/flv.min.js"></script>
