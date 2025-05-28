@@ -29,3 +29,4 @@ return array (
   'description' => '校长影视搜索',
   'keywords' => '影视搜索,电影,电视剧,网剧',
 );
+?>
