@@ -67,8 +67,8 @@ if ($search_query && empty($search_results['list'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title><?php echo $conf['site_title']; ?></title>
-    <meta name="description" content="<?php echo $conf['site_description']; ?>" />
-    <meta name="keywords" content="<?php echo $conf['site_keywords']; ?>" />
+    <meta name="description" content="<?php echo $conf['site_description']; ?>">
+    <meta name="keywords" content="<?php echo $conf['site_keywords']; ?>">
     <link rel="shortcut icon" href="https://pic1.imgdb.cn/item/6812e03558cb8da5c8d5d3c3.png" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
