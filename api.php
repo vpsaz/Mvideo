@@ -9,8 +9,8 @@ header('Access-Control-Allow-Methods: POST, GET');
 
 $config_file = __DIR__ . '/config.php';
 $conf = include($config_file);
-
 $url = $_POST['url'] ?? $_GET['url'] ?? '';
+$titleParam = $_POST['title'] ?? $_GET['title'] ?? '';
 
 if (empty($url)) {
     header('Content-type: application/json;charset=utf-8');
@@ -27,6 +27,14 @@ if (!preg_match('/^https?:\/\//i', $url)) {
 header('Content-type: text/html;charset=utf-8');
 
 $safe_url = htmlspecialchars($url, ENT_QUOTES);
+$currentDomain = $_SERVER['HTTP_HOST'];
+$refererDomain = parse_url($_SERVER['HTTP_REFERER'] ?? '', PHP_URL_HOST);
+
+if ($refererDomain === $currentDomain && !empty($titleParam)) {
+    $title = '正在播放：' . htmlspecialchars($titleParam, ENT_QUOTES);
+} else {
+    $title = htmlspecialchars($conf['site_title'], ENT_QUOTES) . ' - 播放器';
+}
 ?>
 <!DOCTYPE html>
 <html lang="zh">
@@ -34,7 +42,7 @@ $safe_url = htmlspecialchars($url, ENT_QUOTES);
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo $conf['site_title']; ?> - 播放器</title>
+    <title><?php echo $title; ?></title>
     <meta name="description" content="<?php echo $conf['description']; ?>">
     <meta name="keywords" content="<?php echo $conf['keywords']; ?>">
     <link rel="shortcut icon" href="https://pic1.imgdb.cn/item/6812e03558cb8da5c8d5d3c3.png" type="image/x-icon">
