@@ -297,7 +297,6 @@ if ($search_query && empty($search_results['list'])) {
             text-decoration: none;
             cursor: pointer;
             transition: background-color 0.3s ease;
-            /* 添加文本溢出处理样式 */
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
