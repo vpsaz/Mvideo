@@ -287,7 +287,7 @@ if ($search_query && empty($search_results['list'])) {
 
         #movieDetails .play-button {
             display: inline-block;
-            margin: 4px;
+            margin: 0px;
             padding: 8px 11px;
             font-size: 16px;
             background-color: var(--play-button);
@@ -297,6 +297,10 @@ if ($search_query && empty($search_results['list'])) {
             text-decoration: none;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            /* 添加文本溢出处理样式 */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         #movieDetails .play-button:hover {
@@ -447,10 +451,26 @@ if ($search_query && empty($search_results['list'])) {
             margin: 0 auto;
             text-align: center;
         }
+
+        .play-button-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+        }
+
+        .play-button {
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 10px;
+            border: 1px solid #333;
+            background: #eee;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
-
     <button class="theme-toggle" id="themeToggle">
         <i class="<?php echo $initialTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon'; ?>"></i>
     </button>
@@ -471,20 +491,18 @@ if ($search_query && empty($search_results['list'])) {
 
         <div id="searchForm">
             <form action="" method="get" style="display: flex; justify-content: center; align-items: center;">
-                <input type="text" name="search" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>" placeholder="请输入影片名称" style="flex-grow: 1; padding: 10px 10px; font-size: 16px; border: 1px solid var(--border-color); border-radius: 5px; margin-right: 10px; background-color: var(--input-bg); color: var(--input-text);"/>
-                
+                <input type="text" name="search" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>" placeholder="请输入影片名称" style="flex-grow: 1; padding: 10px 10px; font-size: 16px; border: 1px solid var(--border-color); border-radius: 5px; margin-right: 10px; background-color: var(--input-bg); color: var(--input-text); height: 40px; box-sizing: border-box;"/>
                 <div class="select-wrapper">
-                    <select id="sourceSelect" name="y">
-<?php for ($i = 1; $i <= $source_count; $i++): ?>
-    <option value="<?php echo $i; ?>" <?php echo ($selected_source == (string)$i) ? 'selected' : ''; ?>>片源<?php echo $i; ?></option>
-<?php endfor; ?>
+                    <select id="sourceSelect" name="y" style="height: 40px; box-sizing: border-box;">
+                        <?php for ($i = 1; $i <= $source_count; $i++): ?>
+                            <option value="<?php echo $i; ?>" <?php echo ($selected_source == (string)$i) ? 'selected' : ''; ?>>片源<?php echo $i; ?></option>
+                        <?php endfor; ?>
                     </select>
                     <div class="select-arrow">
                         <i class="fas fa-angle-down"></i>
                     </div>
                 </div>
-
-                <button type="submit" style="padding: 10px 15px; font-size: 16px; color: white; background-color: var(--button-bg); border: none; border-radius: 5px; cursor: pointer; white-space: nowrap; text-align: center; vertical-align: middle; display: inline-flex; justify-content: center; align-items: center;">搜索</button>
+                <button type="submit" style="padding: 10px 15px; font-size: 16px; color: white; background-color: var(--button-bg); border: none; border-radius: 5px; cursor: pointer; white-space: nowrap; text-align: center; vertical-align: middle; display: inline-flex; justify-content: center; align-items: center; height: 40px; box-sizing: border-box;">搜索</button>
             </form>
         </div>
 
@@ -523,16 +541,19 @@ if ($search_query && empty($search_results['list'])) {
                 </div><br>
 
                 <h3>🔞 播放列表</h3><hr>
+                <!-- 添加播放按钮容器 -->
+                <div class="play-button-container">
                     <?php if (isset($movie_details['play_url']) && is_array($movie_details['play_url'])): ?>
                         <?php foreach ($movie_details['play_url'] as $episode): ?>
-                            <a href="<?php echo $conf['player_api_prefix']; ?><?php echo htmlspecialchars($episode['link']); ?>" class="play-button" target="_blank"><?php echo htmlspecialchars($episode['title']); ?></a>
+                            <a href="<?php echo $conf['player_api_prefix']; ?><?php echo htmlspecialchars($episode['link']); ?>&title=<?php echo htmlspecialchars($movie_details['name']); ?> - <?php echo htmlspecialchars($episode['title']); ?>" class="play-button" target="_blank" title="<?php echo htmlspecialchars($episode['title']); ?>"><?php echo htmlspecialchars($episode['title']); ?></a>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <p>暂无播放列表。</p>
                     <?php endif; ?>
+                </div>
             </div>
         <?php endif; ?>
-<?php echo $conf['announcement']; ?>
+        <?php echo $conf['announcement']; ?>
     </div>
 
     <script>
@@ -600,13 +621,12 @@ if ($search_query && empty($search_results['list'])) {
             }
         });
     </script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    <?php if ($no_results): ?>
-        alert("没有找到相关影片");
-    <?php endif; ?>
-});
-</script>
-
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            <?php if ($no_results): ?>
+                alert("没有找到相关影片");
+            <?php endif; ?>
+        });
+    </script>
 </body>
 </html>
