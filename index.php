@@ -467,6 +467,12 @@ if ($search_query && empty($search_results['list'])) {
             background: #eee;
             cursor: pointer;
         }
+
+        .recommendation-container h3 {
+            color: var(--text-color);
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
@@ -506,7 +512,7 @@ if ($search_query && empty($search_results['list'])) {
         </div>
 
         <?php if (!isset($_GET['movie_id']) && isset($search_results['list']) && count($search_results['list']) > 0): ?>
-            <div id="movieList">
+            <div class="recommendation-container" id="movieList">
                 <h3>🔍 搜索结果</h3>
                 <?php foreach ($search_results['list'] as $movie): ?>
                     <form action="" method="get">
@@ -518,7 +524,7 @@ if ($search_query && empty($search_results['list'])) {
                 <?php endforeach; ?>
             </div>
         <?php elseif (isset($_GET['movie_id']) && $movie_details && isset($movie_details['name'])): ?>
-            <div id="movieDetails">
+            <div class="recommendation-container" id="movieDetails">
                 <h3>🎬 影片详情</h3><hr>
                 <div class="movie-info">
                     <div class="details">
