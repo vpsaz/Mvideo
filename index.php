@@ -230,7 +230,7 @@ if ($search_query && empty($search_results['list'])) {
         #movieDetails img {
             width: 152px;
             height: 230px;
-            margin-top: 3px;
+            margin-top: 0px;
             display: block;
             border-radius: 8px;
         }
@@ -263,7 +263,7 @@ if ($search_query && empty($search_results['list'])) {
             max-height: 300px;
             overflow-x: auto;
             overflow-y: auto;
-            margin-top: 3px;
+            margin-top: 0px;
         }
 
         .movie-info {
@@ -315,10 +315,17 @@ if ($search_query && empty($search_results['list'])) {
             }
             .movie-info .details {
                 width: 100%;
+                order: 1;
             }
             .movie-info .poster {
                 width: 100%;
                 text-align: center;
+                order: -1;
+                margin-bottom: 10px;
+            }
+            .movie-info .poster img {
+                display: block;
+                margin: 0 auto;
             }
             table th, table td {
                 font-size: 14px;
