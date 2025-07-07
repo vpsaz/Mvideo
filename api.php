@@ -75,7 +75,6 @@ if ($refererDomain === $currentDomain && !empty($titleParam)) {
     <script>
         window.videoUrl = '<?php echo $safe_url; ?>';
     </script>
-    <script src="https://caob.tech/qita/ysss/js/player.js"></script>
-    <script src="https://caob.tech/qita/ysss/js/WatchTogether.js"></script>
+    <script src="https://v.vpsaz.cn/js/player.js"></script>
 </body>
 </html>
