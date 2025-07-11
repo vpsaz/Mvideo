@@ -8,18 +8,33 @@ $config_file = __DIR__ . '/config.php';
 $conf = include($config_file);
 $source_count = isset($conf['source_count']) ? intval($conf['source_count']) : 1;
 
+// 用 cURL 实现的获取远程内容函数，替代 file_get_contents
+function curl_get_contents($url, $timeout = 5) {
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (compatible; MvideoBot/1.0)');
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+
+    $result = curl_exec($ch);
+    curl_close($ch);
+
+    return $result === false ? '' : $result;
+}
+
 function getInitialTheme() {
     if (isset($_COOKIE['theme_preference'])) {
         return $_COOKIE['theme_preference'] === 'dark' ? 'dark' : 'light';
     }
-    
+
     if (isset($_SERVER['HTTP_ACCEPT'])) {
         $accept = $_SERVER['HTTP_ACCEPT'];
         if (strpos($accept, 'prefers-color-scheme: dark') !== false) {
             return 'dark';
         }
     }
-    
+
     return 'light';
 }
 
@@ -40,8 +55,8 @@ $search_query = isset($_GET['search']) ? urlencode($_GET['search']) : '';
 
 $search_results = [];
 if ($search_query) {
-    $search_url = "https://baiapi.cn/api/ysss/?apikey=" . $conf['baiapi_key'] . "&y={$selected_source}&wd={$search_query}";
-    $search_data = @file_get_contents($search_url);
+    $search_url = "https://baiapi.cn/api/ysss/?y={$selected_source}&wd={$search_query}";
+    $search_data = curl_get_contents($search_url);
     if ($search_data) {
         $search_results = json_decode($search_data, true);
     }
@@ -49,8 +64,8 @@ if ($search_query) {
 
 $movie_details = null;
 if (isset($_GET['movie_id'])) {
-    $details_url = "https://baiapi.cn/api/ysss/?apikey=" . $conf['baiapi_key'] . "&y={$selected_source}&id=". urlencode($_GET['movie_id']);
-    $details_data = @file_get_contents($details_url);
+    $details_url = "https://baiapi.cn/api/ysss/?y={$selected_source}&id=" . urlencode($_GET['movie_id']);
+    $details_data = curl_get_contents($details_url);
     if ($details_data) {
         $movie_details = json_decode($details_data, true);
     }
