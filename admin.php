@@ -207,17 +207,17 @@ if (!isset($_SESSION['admin_logged_in'])) {
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">搜索接口APIKEY (<font color="#FF0000">必填</font>)</label>
-                        <div class="flex items-center">
-                            <input type="text" name="baiapi_key" value="<?php echo htmlspecialchars($conf['baiapi_key']); ?>" class="form-input flex-1 px-4 py-2 rounded-lg focus:outline-none">
-                            <a href="https://baiapi.cn/api_doc.php?id=5" target="_blank" class="ml-2 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm hover:bg-gray-200"><i class="fas fa-external-link-alt mr-1"></i>文档</a>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">播放接口 (广告过滤功能需使用<a href="https://github.com/vpsaz/XzPlayer" style="color: red;">BaiAPI播放器</a>)</label>
+                            <input type="text" name="player_api_prefix" value="<?php echo htmlspecialchars($conf['player_api_prefix']); ?>" class="form-input w-full px-4 py-2 rounded-lg focus:outline-none">
                         </div>
                     </div>
-                    
+
                     <div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">播放接口</label>
-                            <input type="text" name="player_api_prefix" value="<?php echo htmlspecialchars($conf['player_api_prefix']); ?>" class="form-input w-full px-4 py-2 rounded-lg focus:outline-none">
+                        <label class="block text-sm font-medium text-gray-700 mb-1"><b>APIKEY</b> (填写则开启广告过滤功能)</label>
+                        <div class="flex items-center">
+                            <input type="text" name="baiapi_key" value="<?php echo htmlspecialchars($conf['baiapi_key']); ?>" class="form-input flex-1 px-4 py-2 rounded-lg focus:outline-none">
+                            <a href="https://baiapi.cn/api_doc.php?id=35" target="_blank" class="ml-2 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm hover:bg-gray-200"><i class="fas fa-external-link-alt mr-1"></i>文档</a>
                         </div>
                     </div>
 
