@@ -8,7 +8,6 @@ $config_file = __DIR__ . '/config.php';
 $conf = include($config_file);
 $source_count = isset($conf['source_count']) ? intval($conf['source_count']) : 1;
 
-// 用 cURL 实现的获取远程内容函数，替代 file_get_contents
 function curl_get_contents($url, $timeout = 5) {
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
