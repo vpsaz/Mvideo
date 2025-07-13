@@ -1,9 +1,4 @@
 <?php
-/**
- * @author    校长bloG <1213235865@qq.com>
- * @github    https://github.com/vpsaz/Mvideo
- */
-
 $config_file = __DIR__ . '/config.php';
 $conf = include($config_file);
 $source_count = isset($conf['source_count']) ? intval($conf['source_count']) : 1;
@@ -460,6 +455,10 @@ if ($search_query && empty($search_results['list'])) {
             font-size: 16px;
         }
 
+        .theme-toggle + .theme-toggle {
+            right: 70px;
+        }
+
         .content p {
             word-wrap: break-word;
             white-space: normal;
@@ -494,12 +493,131 @@ if ($search_query && empty($search_results['list'])) {
             margin-top: 0;
             margin-bottom: 15px;
         }
+
+        .history-list-container {
+            max-height: 300px;
+            overflow-x: auto;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+
+        #playHistoryList p {
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+            margin: 0;
+            transition: background-color 0.3s ease;
+            white-space: nowrap;
+            min-width: 100%;
+            box-sizing: border-box;
+        }
+
+        #playHistoryList p:hover {
+            background-color: var(--movie-list-hover);
+        }
+
+        #playHistoryList .no-history {
+            text-align: center;
+            color: #888;
+            padding: 20px;
+            white-space: normal;
+            display: block;
+        }
+
+        .history-btn-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        #clearHistoryButton {
+            background-color: #dc3545;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            margin-left: 0;
+            margin-right: auto;
+            display: block;
+            transition: background-color 0.3s ease;
+            flex: 1;
+        }
+
+        #clearHistoryButton:hover {
+            background-color: #c82333;
+        }
+
+        #closeHistoryButton {
+            background-color: var(--button-bg);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            margin-left: auto;
+            margin-right: 0;
+            display: block;
+            transition: background-color 0.3s ease;
+            flex: 1;
+        }
+
+        #closeHistoryButton:hover {
+            background-color: var(--button-hover);
+        }
+
+        .history-time {
+            color: #888;
+            font-size: 13px;
+            margin-right: 8px;
+        }
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--movie-list-bg);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--button-bg);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--button-hover);
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--button-bg) var(--movie-list-bg);
+}
     </style>
 </head>
 <body>
+    <button class="theme-toggle" id="playHistoryButton">
+        <i class="fas fa-history"></i>
+    </button>
     <button class="theme-toggle" id="themeToggle">
         <i class="<?php echo $initialTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon'; ?>"></i>
     </button>
+
+    <div id="playHistoryModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9999;">
+        <div class="modal-content">
+            <h2>📜 播放记录</h2>
+            <div id="playHistoryList" class="history-list-container"></div>
+            <div class="history-btn-row">
+                <button id="clearHistoryButton">清空</button>
+                <button id="closeHistoryButton" class="close-modal-button">关闭</button>
+            </div>
+        </div>
+    </div>
 
     <div id="announcementModal">
         <div class="modal-content">
@@ -567,7 +685,6 @@ if ($search_query && empty($search_results['list'])) {
                 </div><br>
 
                 <h3>🔞 播放列表</h3><hr>
-                <!-- 添加播放按钮容器 -->
                 <div class="play-button-container">
                     <?php if (isset($movie_details['play_url']) && is_array($movie_details['play_url'])): ?>
                         <?php foreach ($movie_details['play_url'] as $episode): ?>
@@ -645,7 +762,59 @@ if ($search_query && empty($search_results['list'])) {
             if (shouldShowAnnouncement()) {
                 showAnnouncement();
             }
+
+            const playHistoryButton = document.getElementById('playHistoryButton');
+            const playHistoryModal = document.getElementById('playHistoryModal');
+            const closeHistoryButton = document.getElementById('closeHistoryButton');
+            const clearHistoryButton = document.getElementById('clearHistoryButton');
+
+            playHistoryButton.addEventListener('click', () => {
+                playHistoryModal.style.display = 'block';
+                loadPlayHistory();
+            });
+
+            closeHistoryButton.addEventListener('click', () => {
+                playHistoryModal.style.display = 'none';
+            });
+
+            clearHistoryButton.addEventListener('click', () => {
+                if (confirm('确定要清空播放记录吗？')) {
+                    localStorage.removeItem('playHistory');
+                    loadPlayHistory();
+                }
+            });
+
+            const playButtons = document.querySelectorAll('.play-button');
+            playButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const timeStr = new Date().toLocaleString();
+                    const movieName = `<span class="history-time">${timeStr}</span> <?php echo isset($movie_details['name']) ? htmlspecialchars($movie_details['name']) : ''; ?>`;
+                    const episodeTitle = button.title;
+                    recordPlayHistory(movieName, episodeTitle);
+                });
+            });
         });
+
+        function loadPlayHistory() {
+            const playHistoryList = document.getElementById('playHistoryList');
+            const history = JSON.parse(localStorage.getItem('playHistory')) || [];
+
+            if (history.length === 0) {
+                playHistoryList.innerHTML = '<p class="no-history">暂无播放记录</p>';
+            } else {
+                playHistoryList.innerHTML = history.map(item => `<p>${item}</p>`).join('');
+            }
+        }
+
+        function recordPlayHistory(movieName, episodeTitle) {
+            const history = JSON.parse(localStorage.getItem('playHistory')) || [];
+            const record = `${movieName} - ${episodeTitle}`;
+            const idx = history.indexOf(record);
+            if (idx !== -1) history.splice(idx, 1);
+            history.unshift(record);
+            localStorage.setItem('playHistory', JSON.stringify(history));
+            loadPlayHistory();
+        }
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
