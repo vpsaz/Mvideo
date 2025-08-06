@@ -156,6 +156,10 @@ if ($search_query && empty($search_results['list'])) {
             transition: color 0.3s ease;
         }
 
+        .main-title {
+            margin-top: 50px;
+        }
+
         #searchForm {
             text-align: center;
             margin-bottom: 20px;
@@ -243,7 +247,7 @@ if ($search_query && empty($search_results['list'])) {
 
         #movieDetails img {
             width: 152px;
-            height: 230px;
+            height: 245px;
             margin-top: 0px;
             display: block;
             border-radius: 8px;
@@ -267,6 +271,7 @@ if ($search_query && empty($search_results['list'])) {
         table th {
             background-color: var(--table-header);
             font-weight: bold;
+            width: 15%;
         }
 
         table td {
@@ -283,7 +288,7 @@ if ($search_query && empty($search_results['list'])) {
         .movie-info {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
+            align-items: stretch;
         }
 
         .movie-info .details {
@@ -636,7 +641,7 @@ if ($search_query && empty($search_results['list'])) {
     </div>
 
     <div id="container">
-        <h1><?php echo $conf['site_title']; ?></h1>
+        <h1 class="main-title"><?php echo $conf['site_title']; ?></h1>
 
         <div id="searchForm">
             <form action="" method="get" style="display: flex; justify-content: center; align-items: center;">
