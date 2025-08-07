@@ -584,29 +584,29 @@ if ($search_query && isset($search_results['list']) && empty($search_results['li
             margin-right: 8px;
         }
 
-::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-}
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
 
-::-webkit-scrollbar-track {
-    background: var(--movie-list-bg);
-    border-radius: 5px;
-}
+        ::-webkit-scrollbar-track {
+            background: var(--movie-list-bg);
+            border-radius: 5px;
+        }
 
-::-webkit-scrollbar-thumb {
-    background: var(--button-bg);
-    border-radius: 5px;
-}
+        ::-webkit-scrollbar-thumb {
+            background: var(--button-bg);
+            border-radius: 5px;
+        }
 
-::-webkit-scrollbar-thumb:hover {
-    background: var(--button-hover);
-}
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--button-hover);
+        }
 
-* {
-    scrollbar-width: thin;
-    scrollbar-color: var(--button-bg) var(--movie-list-bg);
-}
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: var(--button-bg) var(--movie-list-bg);
+        }
     </style>
 </head>
 <body>
