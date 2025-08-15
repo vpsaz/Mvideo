@@ -70,7 +70,7 @@ if (isset($_GET['movie_id']) && $_GET['movie_id'] !== '') {
 }
 
 $no_results = false;
-if ($search_query && isset($search_results['list']) && empty($search_results['list'])) {
+if ($search_query && !isset($_GET['movie_id']) && (!isset($search_results['list']) || (isset($search_results['list']) && empty($search_results['list'])))) {
     $no_results = true;
 }
 ?>
@@ -802,6 +802,10 @@ if ($search_query && isset($search_results['list']) && empty($search_results['li
                     recordPlayHistory(movieName, episodeTitle);
                 });
             });
+
+            <?php if ($no_results && !isset($_GET['movie_id'])): ?>
+                alert("没有找到相关影片");
+            <?php endif; ?>
         });
 
         function loadPlayHistory() {
@@ -824,13 +828,6 @@ if ($search_query && isset($search_results['list']) && empty($search_results['li
             localStorage.setItem('playHistory', JSON.stringify(history));
             loadPlayHistory();
         }
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            <?php if ($no_results): ?>
-                alert("没有找到相关影片");
-            <?php endif; ?>
-        });
     </script>
 </body>
 </html>
