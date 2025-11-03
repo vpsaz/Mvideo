@@ -12,7 +12,7 @@ return array (
   'announcement' => '<div id="cc-myssl-id" style="position: fixed;right: 0;bottom: 0;width: 65px;height: 65px;z-index: 99;">
 <a href="https://myssl.com/vpsaz.top?from=mysslid"><img src="https://static.myssl.com/res/images/myssl-id.png" alt="" style="width:100%;height:100%"></a>
 </div>',
-  'admin_password' => 'akaxz',
+  'admin_password' => '123456',
   'bofang_api' => 'api.php?url=',
   'description' => '校长影视搜索',
   'keywords' => '影视搜索,电影,电视剧,网剧',
