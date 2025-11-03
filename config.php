@@ -9,9 +9,7 @@ return array (
   'source_count' => '14',
   'baiapi_key' => '',
   'disclaimers' => '本站所有内容均来自互联网，本站不会保存、复制或传播任何视频文件，也不对本站上的任何内容负法律责任。如果本站部分内容侵犯您的版权请告知，在必要证明文件下我们第一时间撤除。',
-  'announcement' => '<div id="cc-myssl-id" style="position: fixed;right: 0;bottom: 0;width: 65px;height: 65px;z-index: 99;">
-<a href="https://myssl.com/vpsaz.top?from=mysslid"><img src="https://static.myssl.com/res/images/myssl-id.png" alt="" style="width:100%;height:100%"></a>
-</div>',
+  'announcement' => '',
   'admin_password' => '123456',
   'bofang_api' => 'api.php?url=',
   'description' => '校长影视搜索',
