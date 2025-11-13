@@ -15,10 +15,8 @@ function curl_get_contents($url, $timeout = 5) {
     curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
     curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (compatible; MvideoBot/1.0)');
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-
     $result = curl_exec($ch);
     curl_close($ch);
-
     return $result === false ? '' : $result;
 }
 
@@ -26,14 +24,12 @@ function getInitialTheme() {
     if (isset($_COOKIE['theme_preference'])) {
         return $_COOKIE['theme_preference'] === 'dark' ? 'dark' : 'light';
     }
-
     if (isset($_SERVER['HTTP_ACCEPT'])) {
         $accept = $_SERVER['HTTP_ACCEPT'];
         if (strpos($accept, 'prefers-color-scheme: dark') !== false) {
             return 'dark';
         }
     }
-
     return 'light';
 }
 
@@ -51,7 +47,6 @@ if (!isBrowser()) {
 
 $selected_source = isset($_GET['y']) ? $_GET['y'] : (isset($_COOKIE['selected_source']) ? $_COOKIE['selected_source'] : '1');
 $search_query = isset($_GET['search']) ? urlencode($_GET['search']) : '';
-
 $search_results = [];
 $movie_details = null;
 
@@ -61,11 +56,17 @@ if (isset($_GET['movie_id']) && $_GET['movie_id'] !== '') {
     if ($details_data) {
         $movie_details = json_decode($details_data, true);
     }
-} elseif ($search_query) {
+} elseif ($search_query && $search_query !== '') {
     $search_url = "https://baiapi.cn/api/ysss/?y={$selected_source}&wd={$search_query}";
     $search_data = curl_get_contents($search_url);
     if ($search_data) {
         $search_results = json_decode($search_data, true);
+    }
+} else {
+    $default_url = "https://baiapi.cn/api/ysss/?y={$selected_source}";
+    $default_data = curl_get_contents($default_url);
+    if ($default_data) {
+        $search_results = json_decode($default_data, true);
     }
 }
 
@@ -510,7 +511,7 @@ if ($search_query && !isset($_GET['movie_id']) && (!isset($search_results['list'
             margin-bottom: 10px;
         }
 
-        #playHistoryList p {
+        .history-item {
             padding: 10px;
             border-bottom: 1px solid var(--border-color);
             margin: 0;
@@ -518,10 +519,19 @@ if ($search_query && !isset($_GET['movie_id']) && (!isset($search_results['list'
             white-space: nowrap;
             min-width: 100%;
             box-sizing: border-box;
+            cursor: pointer;
+            display: block;
         }
 
-        #playHistoryList p:hover {
+        .history-item:hover {
             background-color: var(--movie-list-hover);
+        }
+
+        .history-link {
+            display: block;
+            width: 100%;
+            text-decoration: none;
+            color: inherit;
         }
 
         #playHistoryList .no-history {
@@ -585,18 +595,18 @@ if ($search_query && !isset($_GET['movie_id']) && (!isset($search_results['list'
         }
 
         ::-webkit-scrollbar {
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
         }
 
         ::-webkit-scrollbar-track {
             background: var(--movie-list-bg);
-            border-radius: 5px;
+            border-radius: 4px;
         }
 
         ::-webkit-scrollbar-thumb {
             background: var(--button-bg);
-            border-radius: 5px;
+            border-radius: 4px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
@@ -661,7 +671,7 @@ if ($search_query && !isset($_GET['movie_id']) && (!isset($search_results['list'
 
         <?php if (!isset($_GET['movie_id']) && isset($search_results['list']) && count($search_results['list']) > 0): ?>
             <div class="recommendation-container" id="movieList">
-                <h3>🔍 搜索结果</h3>
+                <h3><?php echo ($search_query !== '') ? '🔍 搜索结果' : '📺 最近更新'; ?></h3>
                 <?php foreach ($search_results['list'] as $movie): ?>
                     <form action="" method="get">
                         <input type="hidden" name="movie_id" value="<?php echo htmlspecialchars($movie['vod_id']); ?>">
@@ -697,7 +707,7 @@ if ($search_query && !isset($_GET['movie_id']) && (!isset($search_results['list'
                 <div class="play-button-container">
                     <?php if (isset($movie_details['play_url']) && is_array($movie_details['play_url'])): ?>
                         <?php foreach ($movie_details['play_url'] as $episode): ?>
-                            <a href="<?php echo $conf['player_api_prefix']; ?><?php echo htmlspecialchars($episode['link']); ?>&title=<?php echo htmlspecialchars($movie_details['name']); ?> - <?php echo htmlspecialchars($episode['title']); ?>" class="play-button" target="_blank" title="<?php echo htmlspecialchars($episode['title']); ?>"><?php echo htmlspecialchars($episode['title']); ?></a>
+                            <a href="<?php echo $conf['player_api_prefix']; ?><?php echo htmlspecialchars($episode['link']); ?>&title=<?php echo htmlspecialchars($movie_details['name']); ?> - <?php echo htmlspecialchars($episode['title']); ?>" class="play-button" target="_blank" title="<?php echo htmlspecialchars($episode['title']); ?>" data-link="<?php echo $conf['player_api_prefix'] . htmlspecialchars($episode['link']) . '&title=' . htmlspecialchars($movie_details['name']) . ' - ' . htmlspecialchars($episode['title']); ?>"><?php echo htmlspecialchars($episode['title']); ?></a>
                         <?php endforeach; ?>
                     <?php else: ?>
                         <p>暂无播放列表。</p>
@@ -797,9 +807,10 @@ if ($search_query && !isset($_GET['movie_id']) && (!isset($search_results['list'
             playButtons.forEach(button => {
                 button.addEventListener('click', () => {
                     const timeStr = new Date().toLocaleString();
-                    const movieName = `<span class="history-time">${timeStr}</span> <?php echo isset($movie_details['name']) ? htmlspecialchars($movie_details['name']) : ''; ?>`;
+                    const movieName = `<?php echo isset($movie_details['name']) ? htmlspecialchars($movie_details['name']) : ''; ?>`;
                     const episodeTitle = button.title;
-                    recordPlayHistory(movieName, episodeTitle);
+                    const playLink = button.getAttribute('data-link') || button.href;
+                    recordPlayHistory(movieName, episodeTitle, playLink, timeStr);
                 });
             });
 
@@ -813,20 +824,42 @@ if ($search_query && !isset($_GET['movie_id']) && (!isset($search_results['list'
             const history = JSON.parse(localStorage.getItem('playHistory')) || [];
 
             if (history.length === 0) {
-                playHistoryList.innerHTML = '<p class="no-history">暂无播放记录</p>';
+                playHistoryList.innerHTML = '<div class="no-history">暂无播放记录</div>';
             } else {
-                playHistoryList.innerHTML = history.map(item => `<p>${item}</p>`).join('');
+                playHistoryList.innerHTML = history.map(item => `
+                    <div class="history-item" onclick="playFromHistory('${item.link}')">
+                        <div class="history-link">
+                            <span class="history-time">${item.time}</span>${item.name} - ${item.episode}
+                        </div>
+                    </div>
+                `).join('');
             }
         }
 
-        function recordPlayHistory(movieName, episodeTitle) {
+        function recordPlayHistory(movieName, episodeTitle, playLink, timeStr) {
             const history = JSON.parse(localStorage.getItem('playHistory')) || [];
-            const record = `${movieName} - ${episodeTitle}`;
-            const idx = history.indexOf(record);
-            if (idx !== -1) history.splice(idx, 1);
+            const record = {
+                name: movieName,
+                episode: episodeTitle,
+                link: playLink,
+                time: timeStr
+            };
+            
+            const existingIndex = history.findIndex(item => item.link === playLink);
+            if (existingIndex !== -1) {
+                history.splice(existingIndex, 1);
+            }
+            
             history.unshift(record);
+            if (history.length > 50) {
+                history.pop();
+            }
+            
             localStorage.setItem('playHistory', JSON.stringify(history));
-            loadPlayHistory();
+        }
+
+        function playFromHistory(playLink) {
+            window.open(playLink, '_blank');
         }
     </script>
 </body>
