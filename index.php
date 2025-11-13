@@ -50,24 +50,27 @@ $search_query = isset($_GET['search']) ? urlencode($_GET['search']) : '';
 $search_results = [];
 $movie_details = null;
 
-if (isset($_GET['movie_id']) && $_GET['movie_id'] !== '') {
-    $details_url = "https://baiapi.cn/api/ysss/?y={$selected_source}&id=" . urlencode($_GET['movie_id']);
-    $details_data = curl_get_contents($details_url);
-    if ($details_data) {
-        $movie_details = json_decode($details_data, true);
-    }
-} elseif ($search_query && $search_query !== '') {
-    $search_url = "https://baiapi.cn/api/ysss/?y={$selected_source}&wd={$search_query}";
-    $search_data = curl_get_contents($search_url);
-    if ($search_data) {
-        $search_results = json_decode($search_data, true);
-    }
+$api_base = "https://baiapi.cn/api/ysss/";
+$params = [
+    'y' => $selected_source
+];
+
+if (!empty($_GET['movie_id'])) {
+    $params['id'] = $_GET['movie_id'];
+} elseif (!empty($_GET['search'])) {
+    $params['wd'] = $_GET['search'];
+}
+
+$query_string = http_build_query($params);
+$request_url = "{$api_base}?{$query_string}";
+
+$response_data = curl_get_contents($request_url);
+$response_array = $response_data ? json_decode($response_data, true) : [];
+
+if (isset($params['id'])) {
+    $movie_details = $response_array;
 } else {
-    $default_url = "https://baiapi.cn/api/ysss/?y={$selected_source}";
-    $default_data = curl_get_contents($default_url);
-    if ($default_data) {
-        $search_results = json_decode($default_data, true);
-    }
+    $search_results = $response_array;
 }
 
 $no_results = false;
