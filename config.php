@@ -4,7 +4,7 @@ return array (
   'site_description' => '校长影视搜索',
   'site_keywords' => '影视搜索,电影,电视剧,网剧',
   'redirect_url' => '请使用浏览器访问网址',
-  'player_api_prefix' => 'api.php?url=',
+  'player_api_prefix' => 'https://baiapi.cn/api/qtbfq/?url=',
   'background_image_url' => 'https://pic1.imgdb.cn/item/6812a7ae58cb8da5c8d5cbab.png',
   'source_count' => '14',
   'baiapi_key' => '',
